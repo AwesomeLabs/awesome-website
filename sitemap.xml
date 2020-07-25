@@ -6,22 +6,27 @@
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 <url>
   <loc>https://isjustawesome.com/</loc>
-  <lastmod>2018-10-07T00:02:45+00:00</lastmod>
+  <lastmod>2020-07-25T00:02:45+00:00</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
   <loc>https://isjustawesome.com/awesome-breathing/</loc>
-  <lastmod>2018-10-07T00:02:45+00:00</lastmod>
+  <lastmod>2020-07-25T00:02:45+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://isjustawesome.com/pepcalc-peptide-calculator/</loc>
+  <lastmod>2020-07-25T00:02:45+00:00</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
   <loc>https://isjustawesome.com/privacy/</loc>
-  <lastmod>2018-10-07T00:02:45+00:00</lastmod>
+  <lastmod>2020-07-25T00:02:45+00:00</lastmod>
   <priority>0.50</priority>
 </url>
 <url>
   <loc>https://isjustawesome.com/terms/</loc>
-  <lastmod>2018-10-07T00:02:45+00:00</lastmod>
+  <lastmod>2020-07-25T00:02:45+00:00</lastmod>
   <priority>0.50</priority>
 </url>
 </urlset>
