@@ -165,8 +165,11 @@ h3,
 
 h4,
 .h04 {
-  font-size: 1.7rem;
-  line-height: 1.76;
+  font-family: "montserrat-extralight", sans-serif;
+  margin-bottom: 1.2rem;
+  color: #ffffff;
+  /* font-size: 1.7rem;
+  line-height: 1.76; */
 }
 
 h5,
@@ -2632,7 +2635,7 @@ footer {
   padding-bottom: 4.2rem;
   font-size: 1.5rem;
   line-height: 2.7rem;
-  color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 footer a,
@@ -2676,7 +2679,7 @@ footer ul li {
 
 footer ul a,
 footer ul a:visited {
-  color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .footer-logo {
@@ -2697,9 +2700,9 @@ footer ul a:visited {
 }
 
 .footer-social-list {
-  font-size: 1.8rem;
-  margin-top: -1.5rem;
-  margin-bottom: 3rem;
+  font-size: 2.2rem;
+  /* margin-top: -1.5rem;
+  margin-bottom: 3rem; */
 }
 
 .footer-social-list li {

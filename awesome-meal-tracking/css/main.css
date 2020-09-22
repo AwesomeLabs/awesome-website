@@ -64,11 +64,11 @@ body {
 }
 
 body {
-  background: #0d020f;
+  background: #141515;
   font-family: "muli-regular", sans-serif;
   font-size: 1.6rem;
   line-height: 1.875;
-  color: #ccc;
+  color: #767676;
   margin: 0;
   padding: 0;
 }
@@ -107,7 +107,7 @@ h6,
 .h05,
 .h06 {
   font-family: "montserrat-regular", sans-serif;
-  /* color: #151515; */
+  color: #151515;
   font-style: normal;
   text-rendering: optimizeLegibility;
   margin-bottom: 2.4rem;
@@ -1099,8 +1099,8 @@ input::-moz-focus-inner {
   line-height: 1.324;
   color: #ffffff;
   position: relative;
-  /* padding-bottom: 3.6rem;
-  margin-top: 160px; */
+  padding-bottom: 3.6rem;
+  margin-top: 160px;
 }
 
 /* .intro-header::before {
@@ -1484,7 +1484,7 @@ input::-moz-focus-inner {
   display: table-cell;
   width: 100%;
   height: 100%;
-  /* vertical-align: bottom; */
+  vertical-align: bottom;
 }
 
 .home-content .contents {
@@ -1492,9 +1492,7 @@ input::-moz-focus-inner {
 }
 
 .home-content-left {
-  padding: 11rem 60px 12rem 40px;
-  /* margin-top: 11rem; */
-  /* padding: 0 60px 0 40px; */
+  padding: 15rem 0 12rem 40px;
   position: relative;
   width: 50%;
 }
@@ -1543,20 +1541,20 @@ input::-moz-focus-inner {
   display: block;
   position: absolute;
   right: 0;
-  top: 60%;
-  -webkit-transform: translateY(-60%);
-  -ms-transform: translateY(-60%);
-  transform: translateY(-60%);
-  /* padding-top: 21rem; */
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  padding-top: 21rem;
   z-index: 500;
   width: 50%;
-  text-align: center;
+  text-align: right;
 }
 
 .home-image-right img {
-  vertical-align: top;
-  /* margin-right: 60px; */
-  width: 60%;
+  vertical-align: bottom;
+  margin-right: 15px;
+  width: 75%;
 }
 
 /* home social-list */
@@ -1713,11 +1711,11 @@ html[data-useragent*="MSIE 10.0"] .home-scrolldown,
  * home section
  * ------------------------------------------------------------------- */
 
-/* @media only screen and (max-width: 1300px) {
+@media only screen and (max-width: 1300px) {
   .home-image-right {
     right: 5rem;
   }
-} */
+}
 
 @media only screen and (max-width: 1200px) {
   #home {
@@ -1727,7 +1725,7 @@ html[data-useragent*="MSIE 10.0"] .home-scrolldown,
     vertical-align: middle;
   }
   .home-content-left {
-    padding: 17rem 0 12rem 40px;
+    padding: 18rem 0 12rem 40px;
   }
   .home-content-left h3 {
     font-size: 1.5rem;
@@ -1766,7 +1764,7 @@ html[data-useragent*="MSIE 10.0"] .home-scrolldown,
   }
   .home-image-right {
     width: 40%;
-    padding-top: 0;
+    padding-top: 120px;
   }
   .home-image-right img {
     vertical-align: top;
@@ -2511,13 +2509,13 @@ html[data-useragent*="MSIE 10.0"] .home-scrolldown,
  * ------------------------------------------------------------------- */
 
 #download {
-  background: -moz-linear-gradient(top, #053b5a 0%, #14a360 100%);
+  background: -moz-linear-gradient(top, #f37934 0%, #f7a60f 100%);
   /* FF3.6-15 */
-  background: -webkit-linear-gradient(top, #053b5a 0%, #14a360 100%);
+  background: -webkit-linear-gradient(top, #f37934 0%, #f7a60f 100%);
   /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(top, #053b5a 0%, #14a360 100%);
+  background: linear-gradient(to bottom, #f37934 0%, #f7a60f 100%);
   /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#053b5a', endColorstr='#14a360', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f37934', endColorstr='#f7a60f', GradientType=0);
   /* IE6-9 */
   color: #fff;
   padding-top: 12rem;
