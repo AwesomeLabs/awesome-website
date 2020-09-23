@@ -621,20 +621,18 @@ input[type="url"],
 input[type="password"],
 textarea,
 select {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  /* display: block; */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   height: 6rem;
   padding: 1.5rem 2rem;
   border: 0;
   outline: none;
   color: #ffffff;
   font-family: "muli-regular", sans-serif;
-  /* font-size: 1.5rem; */
   font-size: 1.9rem;
   line-height: 3rem;
   max-width: 100%;
-  /* background: rgba(0, 0, 0, 0.1); */
   background: rgba(0, 0, 0, 0.4);
   -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
@@ -661,7 +659,7 @@ select {
 
 .ss-custom-select select option {
   padding-left: 2rem;
-  padding-right: 2rem;
+  padding-right: 3rem;
 }
 
 .ss-custom-select select::-ms-expand {
@@ -673,7 +671,7 @@ select {
   font-family: "FontAwesome";
   position: absolute;
   top: 50%;
-  right: 1.5rem;
+  right: 0.7rem;
   margin-top: -10px;
   bottom: auto;
   width: 20px;
