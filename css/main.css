@@ -652,9 +652,9 @@ select {
   appearance: none;
   text-indent: 0.01px;
   text-overflow: "";
-  margin: 0;
+  margin-bottom: 3rem;
   line-height: 3rem;
-  vertical-align: middle;
+  /* vertical-align: middle; */
 }
 
 .ss-custom-select select option {
