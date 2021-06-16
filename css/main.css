@@ -202,7 +202,7 @@ p.lead {
   font-family: "muli-light", sans-serif;
   font-size: 2.1rem;
   line-height: 1.857;
-  color: #c4c4c4;
+  color: #efefef;
   margin-bottom: 3.6rem;
 }
 
@@ -1506,9 +1506,16 @@ input::-moz-focus-inner {
 .home-content .contents {
   position: relative;
 }
+.home-content-featured {
+  /* padding: 15rem 0 2rem 1rem; */
+  padding: 10rem 0 2rem 5rem;
+  position: relative;
+  width: 75%;
+}
 
 .home-content-left {
-  padding: 15rem 0 2rem 6rem;
+  /* padding: 15rem 0 2rem 6rem; */
+  padding: 1rem 0 2rem 4.5rem;
   /* padding: 5rem 0 12rem 40px; */
   position: relative;
   width: 75%;
@@ -1523,9 +1530,18 @@ input::-moz-focus-inner {
   margin-bottom: 9rem;
 }
 
-.home-content-left h1 {
+.home-content-left,
+.home-content-featured h1 {
   font-family: "montserrat-extralight", sans-serif;
   font-size: 5.2rem;
+  letter-spacing: -0.05rem;
+  line-height: 1.269;
+  color: #ffffff;
+}
+
+.home-content-left h2 {
+  font-family: "montserrat-extralight", sans-serif;
+  font-size: 3rem;
   letter-spacing: -0.05rem;
   line-height: 1.269;
   color: #ffffff;
@@ -1742,7 +1758,7 @@ html[data-useragent*="MSIE 10.0"] .home-scrolldown,
     vertical-align: top;
   }
   .home-content-left {
-    padding: 15rem 0 4rem 2rem;
+    padding: 1rem 0 4rem 5rem;
   }
   .home-content-left h3 {
     font-size: 1.5rem;
@@ -1861,11 +1877,15 @@ html[data-useragent*="MSIE 10.0"] .home-scrolldown,
   }
   .home-content-left {
     /* padding: 12rem 2.5rem 366px; */
-    padding: 12rem 0 3rem;
+    padding: 0 0 3rem 0;
     /* width: 100%; */
   }
-  .home-content-left h1 {
-    font-size: 3rem;
+  .home-content-featured {
+    padding: 10rem 0 2rem 0;
+    width: 100%;
+  }
+  .home-content-featured h1 {
+    font-size: 3.5rem;
   }
   input[type="email"] {
     width: 60%;
@@ -1874,7 +1894,14 @@ html[data-useragent*="MSIE 10.0"] .home-scrolldown,
 
 @media only screen and (max-width: 400px) {
   .home-content-left {
-    padding: 12rem 0 3rem;
+    padding: 2rem 0 3rem;
+  }
+  .home-content-featured {
+    padding: 10rem 0 2rem 0;
+    width: 100%;
+  }
+  .home-content-featured h1 {
+    font-size: 3.9rem;
   }
   /* .home-content-left .button.stroke {
     margin: 0 0 1.2rem 0;
@@ -1922,10 +1949,6 @@ html[data-useragent*="MSIE 10.0"] .home-scrolldown,
 #about h3 {
   font-family: "montserrat-extralight", sans-serif;
   color: white;
-  /* font-size: 1.8rem;
-  padding-bottom: 2.4rem;
-  margin-bottom: 2.4rem;
-  position: relative; */
 }
 
 .about-features .feature h3 {
