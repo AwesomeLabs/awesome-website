@@ -677,10 +677,19 @@ select {
   color: #ffffff;
 }
 
-.form-signup {
+#form-signup {
   background-color: rgba(101, 21, 167, 0.2);
   border-radius: 10px;
-  padding: 3rem 1rem 0 2rem;
+  padding: 3rem 3rem 0 2rem;
+}
+
+#form-signup h2 {
+  font-size: 2.6rem;
+}
+
+#form-signup p {
+  font-size: 1.9rem;
+  margin-botton: 0.8rem;
 }
 
 /* IE9 and below */
@@ -931,6 +940,19 @@ input::-moz-focus-inner {
 .ss-notice {
   background-color: #fff099;
   color: #bba31b;
+}
+
+.mce_inline_error {
+  color: #e65153;
+  font-size: 1.6rem;
+  text-align: center;
+  padding: 0 0 1.2rem 0;
+}
+#mce-success-response {
+  color: #75cc36;
+  font-size: 1.6rem;
+  text-align: center;
+  padding: 0 0 1.2rem 0;
 }
 
 /* -------------------------------------------------------------------
@@ -1533,7 +1555,7 @@ input::-moz-focus-inner {
 .home-content-left,
 .home-content-featured h1 {
   font-family: "montserrat-extralight", sans-serif;
-  font-size: 5.2rem;
+  font-size: 4.2rem;
   letter-spacing: -0.05rem;
   line-height: 1.269;
   color: #ffffff;
@@ -1808,7 +1830,7 @@ html[data-useragent*="MSIE 10.0"] .home-scrolldown,
 @media only screen and (max-width: 900px) {
   #home {
     height: auto;
-    min-height: 840px;
+    min-height: 740px;
   }
   #home,
   .home-content {
@@ -1918,7 +1940,7 @@ html[data-useragent*="MSIE 10.0"] .home-scrolldown,
  * ------------------------------------------------------------------- */
 
 #about {
-  padding-top: 5rem;
+  padding-top: 2rem;
   overflow: hidden;
   color: #ffffff;
 }
