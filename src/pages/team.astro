@@ -1,0 +1,137 @@
+---
+import { Image } from 'astro:assets';
+import PageLayout from '@/layouts/PageLayout.astro';
+import { team } from '@/data/team';
+import { SITE } from '@/config';
+
+/**
+ * Person entities, linked to the Organization declared in BaseLayout. A studio
+ * this small is largely identified by who it is, so naming the founders in
+ * structured data is worth the few lines.
+ */
+const schema = team.map((member) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: member.name,
+  jobTitle: member.role,
+  worksFor: { '@id': `${SITE.url}/#organization` },
+  url: `${SITE.url}/team/`,
+  sameAs: [member.linkedin, member.x],
+}));
+---
+
+<PageLayout
+  heading="About Awesome Labs"
+  {/* Explicit, or PageLayout's default appends the brand to a heading that
+      already contains it: "About Awesome Labs | Awesome Labs". */}
+  title="About Awesome Labs"
+  path="/team/"
+  description="Awesome Labs is Bob Troia and Jeremy Gollehon, who have built through every wave of the consumer internet since the earliest days of the Web"
+  wide
+  prose={false}
+  schema={schema}
+>
+  {
+    /*
+    Standfirst. Sized between the page heading and body copy — the homepage
+    gets this effect from --text-al-statement, but that tops out at 38px and
+    would out-scale this page's own h1.
+
+    It carries the positioning alone. An earlier draft followed it with a
+    paragraph reciting the proof points (companies founded, two exits, four
+    apps shipped), but each of those is stated again within a screen of it: the
+    exits in Bob's bio, the four apps on the homepage. It summarised a page the
+    reader had not reached yet. Evidence belongs next to the person it is
+    evidence for.
+  */
+  }
+  <p class="max-w-[48ch] text-al-page-lead text-al-ink/85">
+    Awesome Labs was started by two friends who have been building on the
+    internet since its earliest days and have been early to every wave that
+    followed. Long enough to see what is coming, and to tell it apart from the
+    hype.
+  </p>
+
+  <div class="mt-14 flex flex-col gap-14">
+    {
+      team.map((member, i) => (
+        <article
+          class:list={[
+            'grid gap-6 sm:grid-cols-[auto_1fr] sm:gap-8',
+            // Hairline between founders rather than around each — a card per
+            // person would read as a directory listing, which is the opposite
+            // of the continuous story this page is trying to tell.
+            i > 0 && 'border-t border-al-ink/10 pt-14',
+          ]}
+        >
+          <Image
+            src={member.photo}
+            alt={member.name}
+            widths={[160, 320, 480]}
+            sizes="(min-width: 640px) 152px, 120px"
+            class="size-30 rounded-al-card object-cover sm:size-38"
+          />
+
+          <div>
+            <h2 class="font-head text-al-card-name font-semibold text-al-ink">
+              {member.name}
+            </h2>
+            <p class="mt-1 text-al-card-tag font-bold text-al-accent">
+              {member.role}
+            </p>
+
+            <p class="mt-4 max-w-[62ch] text-al-body text-al-ink/75">
+              {member.bio}
+            </p>
+
+            {/*
+              Inline SVG, not an icon font: two glyphs are not worth a webfont,
+              and these inherit currentColor so the hover state is one property.
+
+              The 44px box is the tap target and is mostly padding — the glyph
+              itself is 18px. Sizing the link to the glyph would leave a target
+              well under the minimum, which is the usual way icon links fail on
+              a phone.
+            */}
+            <ul class="mt-5 flex gap-1">
+              <li>
+                <a
+                  href={member.linkedin}
+                  target="_blank"
+                  rel="noopener"
+                  aria-label={`${member.name} on LinkedIn`}
+                  class="flex size-11 items-center justify-center text-al-ink/70 transition-colors duration-200 hover:text-al-accent"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    class="size-4.5 fill-current"
+                    aria-hidden="true"
+                  >
+                    <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13M7.12 20.45H3.55V9h3.57zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0" />
+                  </svg>
+                </a>
+              </li>
+              <li>
+                <a
+                  href={member.x}
+                  target="_blank"
+                  rel="noopener"
+                  aria-label={`${member.name} on X`}
+                  class="flex size-11 items-center justify-center text-al-ink/70 transition-colors duration-200 hover:text-al-accent"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    class="size-4.5 fill-current"
+                    aria-hidden="true"
+                  >
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</PageLayout>

@@ -1,0 +1,134 @@
+[build]
+  publish = "dist"
+  command = "bun run build"
+
+[build.environment]
+  NODE_VERSION = "24"
+  # Pinned so CI matches local. bun.lock is committed, so Netlify detects Bun
+  # and runs bun install; without this the Bun version floats between builds.
+  BUN_VERSION = "1.3.14"
+
+# ---------------------------------------------------------------- redirects
+#
+# Legacy product routes. Both products moved to their own domains; the old
+# site served meta-refresh stubs at these paths, and the .htaccess it shipped
+# with 301'd one of them. These replace both mechanisms.
+#
+# 301, not 302: the moves are permanent, and a permanent redirect is what
+# passes the accumulated link equity to the new domain.
+#
+# The splat forms catch deep links (/awesome-breathing/anything) as well as the
+# bare directory. Netlify matches most-specific-first, so the exact-path rules
+# are not shadowed by the splats.
+
+[[redirects]]
+  from = "/awesome-breathing"
+  to = "https://awesomebreathing.com/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/awesome-breathing/*"
+  to = "https://awesomebreathing.com/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/pepcalc-peptide-calculator"
+  to = "https://pepcalc.app/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/pepcalc-peptide-calculator/*"
+  to = "https://pepcalc.app/"
+  status = 301
+  force = true
+
+# Plausible, proxied through this domain so the tracker is first-party.
+# Requests to plausible.io are on every major blocklist and quietly lose a
+# large slice of traffic; served from our own origin they are ordinary assets.
+#
+# pa-cBBYTykCD0usrY4wYDFon is the Plausible site ID. In the current tracker the
+# site is identified by that ID in the script filename, NOT by a data-domain
+# attribute, so this line is the only place the site is named — get it wrong
+# and events are accepted but attributed nowhere.
+#
+# The paths are deliberately bland rather than Plausible's documented
+# /js/script.js and /api/event, which the lists have started matching too.
+# Renaming them is free here but NOT free later: the script src and the
+# endpoint passed to plausible.init() in BaseLayout.astro must move in the
+# same commit, or events stop arriving.
+#
+# status 200 makes these proxies rather than redirects, so the browser only
+# ever sees this domain. force = true wins over the static file lookup.
+[[redirects]]
+  from = "/js/pa.js"
+  to = "https://plausible.io/js/pa-cBBYTykCD0usrY4wYDFon.js"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/e"
+  to = "https://plausible.io/api/event"
+  status = 200
+  force = true
+
+# NOTE: /api/subscribe is NOT redirected here. The function declares its own
+# path in netlify/functions/subscribe.mts (`export const config = { path }`),
+# which is one fewer place for the route to drift out of sync.
+
+# --------------------------------------------------------- preview deploys
+# Correct canonicals plus a blanket noindex over the whole deploy, so a
+# preview never competes with production in search results.
+[context.dev]
+  command = "bun run build && printf '%s\\n' '/*' '  X-Robots-Tag: noindex, nofollow' > dist/_headers"
+
+[context.dev.environment]
+  AL_SITE_URL = "https://dev.isjustawesome.com"
+
+[context.deploy-preview]
+  command = "bun run build && printf '%s\\n' '/*' '  X-Robots-Tag: noindex, nofollow' > dist/_headers"
+
+# ------------------------------------------------------------------ headers
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    # Mostly 'self'. Two deliberate exceptions, both for GA4:
+    #
+    #   script-src   www.googletagmanager.com — gtag.js itself
+    #   connect-src  *.google-analytics.com, *.analytics.google.com — where
+    #                gtag posts hits. Forgetting connect-src fails SILENTLY:
+    #                the script loads, the page looks fine, and no data ever
+    #                arrives.
+    #   img-src      already permits https:, which covers GA's pixel fallback.
+    #
+    # Plausible needs no exception — it is proxied through this domain (see
+    # the redirects above), so /js/pa.js and /api/e are same-origin. Mailchimp
+    # needs none either: the browser talks to /api/subscribe on this domain
+    # and the Netlify function makes the outbound call.
+    #
+    # Drop the GA4 tag from BaseLayout.astro and these exceptions should go
+    # with it.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com; form-action 'self'; frame-ancestors 'none'; base-uri 'self'"
+
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/favicons/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, must-revalidate"
+
+[[headers]]
+  for = "/og/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, must-revalidate"

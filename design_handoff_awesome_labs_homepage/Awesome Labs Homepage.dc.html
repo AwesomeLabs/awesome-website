@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Space+Grotesk:wght@400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0}
+body{background:#f2f7f6;color:#16211f;font-family:'Space Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#2e6f68}a:hover{color:#1e3f3b}
+*{box-sizing:border-box}
+</style></helmet>
+
+<div style="width:100%;background:#f2f7f6;color:#16211f;font-family:'Space Grotesk',system-ui,sans-serif">
+
+<header data-screen-label="Header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px 24px;padding:clamp(20px,3.2vw,34px) clamp(20px,5vw,56px) 0">
+  <img src="assets/logo-ink.png" alt="Awesome Labs" style="height:clamp(26px,3.4vw,30px);width:auto;display:block" />
+  <nav style="display:flex;gap:clamp(16px,2.4vw,28px);font-size:clamp(14px,1.6vw,15px);color:rgba(22,33,31,.7)">
+    <a href="#products" style="text-decoration:none;color:inherit;min-height:44px;display:flex;align-items:center" style-hover="color:#2e6f68">Products</a>
+    <a href="#work" style="text-decoration:none;color:inherit;min-height:44px;display:flex;align-items:center" style-hover="color:#2e6f68">Work with us</a>
+    <a href="#contact" style="text-decoration:none;color:inherit;min-height:44px;display:flex;align-items:center" style-hover="color:#2e6f68">Say hello</a>
+  </nav>
+</header>
+
+<section data-screen-label="Hero" style="padding:clamp(52px,9vw,100px) clamp(20px,5vw,56px) clamp(56px,7vw,72px);text-align:center">
+  <h1 style="font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:600;font-size:clamp(38px,6.6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:0 auto;max-width:19ch;text-wrap:balance">Hi, we're Awesome Labs. A health, wellness <span style="color:#2e6f68">+</span> emerging technology studio.</h1>
+  <p style="font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:400;font-size:clamp(21px,3.3vw,38px);line-height:1.3;max-width:32ch;margin:clamp(20px,3vw,30px) auto 0;text-wrap:balance;color:rgba(22,33,31,.55)">From data-driven wellness to blockchain technologies, <span style="color:#16211f">we conceive, build, and launch things that make people <span style="color:#2e6f68">healthier and happier.</span></span></p>
+</section>
+
+<section id="products" data-screen-label="Products" style="padding:0 clamp(20px,5vw,56px) clamp(48px,7vw,64px)">
+  <div style="text-align:center;margin:0 auto clamp(28px,4.5vw,40px);max-width:62ch">
+    <h2 style="font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:600;font-size:clamp(28px,4vw,42px);letter-spacing:-.03em;margin:0">Some of our products</h2>
+    <p style="font-size:clamp(15px,1.9vw,17px);line-height:1.6;color:rgba(22,33,31,.6);margin:12px 0 0">Four apps we conceived, designed, built, and shipped ourselves. Together they have been used by hundreds of thousands of people.</p>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:clamp(16px,2.4vw,24px)">
+    <sc-for list="{{ products }}" as="p" hint-placeholder-count="4">
+      <a href="#products" style="display:flex;flex-direction:column;gap:14px;background:#ffffff;border:1px solid rgba(22,33,31,.1);border-radius:22px;padding:0 24px 26px;text-decoration:none;color:inherit;transition:transform .2s;overflow:hidden" style-hover="transform:translateY(-4px)">
+        <span style="margin:0 -24px;aspect-ratio:4/3;background:repeating-linear-gradient(135deg,rgba(22,33,31,.06) 0 10px,rgba(22,33,31,.02) 10px 20px);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(22,33,31,.42);text-align:center;padding:0 12px">{{ p.shot }}</span>
+        <img src="{{ p.icon }}" alt="" style="width:60px;height:60px;border-radius:18px;display:block;margin-top:-46px;box-shadow:0 6px 20px rgba(0,0,0,.18)" />
+        <span style="font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:600;font-size:22px;letter-spacing:-.02em">{{ p.name }}</span>
+        <span style="font-size:13px;color:#2e6f68">{{ p.tag }}</span>
+        <span style="font-size:15px;line-height:1.6;color:rgba(22,33,31,.62)">{{ p.blurb }}</span>
+      </a>
+    </sc-for>
+  </div>
+</section>
+
+<section id="work" data-screen-label="Work with us" style="background:#1e3f3b;color:#e8f4f1;padding:clamp(52px,8vw,72px) clamp(20px,5vw,56px)">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:clamp(28px,5vw,56px);align-items:center">
+    <h2 style="font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:600;font-size:clamp(32px,4.6vw,52px);line-height:1.05;letter-spacing:-.03em;margin:0;max-width:18ch;text-wrap:pretty">Work with us. Our apps reach hundreds of thousands of people, and <span style="color:#a6d3cb">yours could be next.</span></h2>
+    <div>
+      <p style="font-size:clamp(16px,2.1vw,19px);line-height:1.6;margin:0;max-width:46ch;color:rgba(232,244,241,.7)">We take on a small number of client engagements each year: mobile, AI, and onchain projects, taken from first sketch to launch by the same team that builds our own.</p>
+      <button style="border:none;background:#e8f4f1;color:#1e3f3b;font-family:'Space Grotesk',sans-serif;font-size:15px;min-height:52px;padding:16px 32px;border-radius:999px;cursor:pointer;margin-top:28px;transition:background .2s" style-hover="background:#a6d3cb">Start a project →</button>
+    </div>
+  </div>
+</section>
+
+<section id="contact" data-screen-label="Mailing list" style="background:#7fbdb4;color:#0f2320;padding:clamp(48px,7vw,64px) clamp(20px,5vw,56px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:clamp(24px,4vw,56px)">
+  <div style="max-width:40ch;flex:1 1 320px">
+    <h2 style="font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:600;font-size:clamp(28px,4vw,42px);letter-spacing:-.02em;margin:0 0 10px">Something new is coming.</h2>
+    <p style="font-size:16px;line-height:1.6;margin:0;color:rgba(15,35,32,.72)">Subscribe and be the first to get early access.</p>
+  </div>
+  <form style="display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;flex:1 1 360px;max-width:520px" onSubmit="{{ onSubmit }}">
+    <input type="email" placeholder="your@email.com" aria-label="Email address" style="flex:1 1 200px;min-height:56px;background:#f2fbf9;border:1px solid rgba(15,35,32,.18);border-radius:999px;padding:16px 22px;font-family:'Space Grotesk',sans-serif;font-size:16px;color:#0f2320;outline:none" />
+    <button type="submit" style="border:none;background:#0f2320;color:#f2fbf9;font-family:'Space Grotesk',sans-serif;font-size:15px;min-height:56px;padding:16px 28px;border-radius:999px;cursor:pointer;flex:0 0 auto;transition:background .2s" style-hover="background:#2e6f68">Notify me</button>
+  </form>
+</section>
+
+<footer style="background:#f2f7f6;color:rgba(22,33,31,.55);font-size:13px;padding:clamp(20px,3vw,26px) clamp(20px,5vw,56px) clamp(28px,4vw,40px);display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;border-top:1px solid rgba(22,33,31,.12)">
+  <span>© 2026 Awesome Labs, LLC</span>
+  <span style="display:flex;gap:22px"><a href="#contact" style="text-decoration:none;color:inherit">Team</a><a href="#contact" style="text-decoration:none;color:inherit">Contact</a><a href="#contact" style="text-decoration:none;color:inherit">Privacy</a></span>
+</footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const products = [
+      {icon:'assets/supptrack.png',shot:'SuppTrack app screens',name:'SuppTrack',tag:'Smart supplement tracking',blurb:"A better way to manage your supplement routine. Organize, track, and optimize your intake, powered by AI and the world's largest supplement database."},
+      {icon:'assets/breathing.png',shot:'Breathing session screen',name:'Awesome Breathing',tag:'Guided breath pacer',blurb:'A simple, elegant tool to guide and visualize your breathing. For meditation, relaxation, or a few moments of calm in your day.'},
+      {icon:'assets/pepcalc.png',shot:'PepCalc calculator screen',name:'PepCalc',tag:'Peptide calculator app',blurb:'Determines how many IUs or tick marks to measure in an insulin syringe of any size after reconstitution of research peptides.'},
+      {icon:'assets/tokenart.png',shot:'token.art gallery view',name:'token.art',tag:'Multi-chain NFT viewer',blurb:'Aggregate, browse, and showcase your blockchain-based NFTs and digital collectibles. Made for collectors, by collectors, and 100% free.'}
+    ];
+    return { products, onSubmit: (e) => e.preventDefault() };
+  }
+}
+
+</script>
+</body>
+</html>

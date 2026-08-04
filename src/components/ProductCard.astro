@@ -1,0 +1,103 @@
+---
+import { Image } from 'astro:assets';
+import type { Product } from '@/data/products';
+
+interface Props {
+  product: Product;
+  /** First card renders its icon eagerly; the rest are below the fold. */
+  eager?: boolean;
+}
+
+const { product, eager = false } = Astro.props;
+---
+
+{/*
+  Three discrete links per card — featured image, app icon, and the CTA — with
+  the card itself inert. The blurb is plain text, so it stays selectable and
+  clicking it does nothing.
+
+  All three point at the same URL, which needs care: three identical tab stops
+  and three identical announcements per card is noise for anyone using a
+  keyboard or a screen reader. So they are not all exposed equally — see the
+  notes on each below.
+*/}
+<article
+  class="product-card group flex flex-col gap-3.5 overflow-hidden rounded-al-card border border-al-ink/10 bg-al-card px-6 pb-6.5 text-al-ink transition-transform duration-200 hover:-translate-y-1"
+>
+  {
+    product.shot ? (
+      /*
+        The image link keeps the descriptive alt as its accessible name. That
+        makes it an informative link rather than a second nameless one, which
+        is why it stays in the tab order.
+      */
+      <a href={product.href} target="_blank" rel="noopener" class="-mx-6 block">
+        <Image
+          src={product.shot}
+          alt={product.shotAlt ?? ''}
+          widths={[400, 600, 800]}
+          sizes="(min-width: 1180px) 320px, (min-width: 560px) 45vw, 90vw"
+          class="aspect-[4/3] w-full object-cover"
+          loading={eager ? 'eager' : 'lazy'}
+        />
+      </a>
+    ) : (
+      /* No artwork yet: a panel, not a link — there is nothing to describe. */
+      <div
+        class="-mx-6 aspect-[4/3] w-[calc(100%+3rem)] bg-gradient-to-br from-al-paper via-al-card to-al-band/40"
+        aria-hidden="true"
+      />
+    )
+  }
+
+  {/*
+    The icon is decorative — the product name sits directly beneath it as real
+    text — so its alt is empty. A link whose only content is an empty-alt image
+    has no accessible name at all, which fails WCAG 2.4.4, so this one is
+    hidden from assistive tech and taken out of the tab order instead. It stays
+    clickable with a mouse, and the CTA below carries the same destination with
+    a real name.
+  */}
+  <a
+    href={product.href}
+    target="_blank"
+    rel="noopener"
+    aria-hidden="true"
+    tabindex="-1"
+    class="-mt-11.5 block w-fit"
+  >
+    <Image
+      src={product.icon}
+      alt=""
+      widths={[60, 120, 180]}
+      sizes="60px"
+      class="block size-15 rounded-al-icon shadow-al-icon"
+      loading={eager ? 'eager' : 'lazy'}
+    />
+  </a>
+
+  <span class="font-head text-al-card-name font-semibold">{product.name}</span>
+  <span class="text-al-card-tag font-bold text-al-accent">{product.tag}</span>
+  <span class="text-al-card-blurb text-al-ink/75">{product.blurb}</span>
+
+  {/*
+    `mt-auto` pins the CTA to the bottom of the card rather than letting it sit
+    directly under the blurb. Grid rows stretch all cards to a common height, so
+    without it the CTAs would sit at four different heights across a row,
+    tracking whichever blurb happened to be longest.
+  */}
+  <a
+    href={product.href}
+    target="_blank"
+    rel="noopener"
+    class="mt-auto inline-flex w-fit items-center gap-1.5 pt-1 text-al-card-tag font-semibold text-al-accent"
+  >
+    Visit {product.name}
+    <span
+      aria-hidden="true"
+      class="transition-transform duration-200 group-hover:translate-x-0.5"
+    >
+      →
+    </span>
+  </a>
+</article>

@@ -1,0 +1,13 @@
+{
+  "name": "Awesome Labs",
+  "short_name": "Awesome Labs",
+  "icons": [
+    { "src": "/favicons/favicon-96.png", "sizes": "96x96", "type": "image/png" },
+    { "src": "/favicons/favicon-152.png", "sizes": "152x152", "type": "image/png" },
+    { "src": "/favicons/favicon-228.png", "sizes": "228x228", "type": "image/png" }
+  ],
+  "theme_color": "#f2f7f6",
+  "background_color": "#f2f7f6",
+  "display": "browser",
+  "start_url": "/"
+}

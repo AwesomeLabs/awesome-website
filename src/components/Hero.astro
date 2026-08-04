@@ -1,0 +1,206 @@
+---
+/**
+ * The hero is pure type: an H1 and a statement paragraph, both centred and
+ * both measure-capped in `ch` so the line breaks fall where the design drew
+ * them at every width. `text-wrap: balance` does the rest.
+ */
+---
+
+<section
+  class="al-shell px-al-gutter pt-al-hero-top pb-al-hero-bottom text-center"
+>
+  <h1
+    class="mx-auto max-w-[19ch] text-balance font-head text-al-h1 font-semibold"
+  >
+    Hi. We're <span class="al-swash">Awesome Labs</span>, a <span
+      class="al-hl al-hl--cool">health, wellness</span
+    > <span class="text-al-accent">+</span> <span class="al-hl al-hl--warm"
+      >emerging technology</span
+    > studio.
+  </h1>
+
+  {
+    /*
+    One sentence, two treatments: the lead-in sits back at 70% ink, and the
+    payoff clause carries the animated spark gradient. Keeping it as one
+    nested span means it still reads as a continuous sentence to a screen
+    reader rather than as two fragments.
+
+    The two-tone ink/accent split the handoff drew is gone — the gradient
+    spans the whole clause now, so a separate accent span inside it would be
+    overwritten anyway.
+  */
+  }
+  <p
+    class="mx-auto mt-al-statement-mt max-w-[32ch] text-balance font-head text-al-statement font-normal text-al-ink/70"
+  >
+    From data-driven consumer wellness to blockchain and AI, <span class="al-spark"
+      >we conceive, build, and launch apps that make people healthier and happier.</span
+    >
+  </p>
+</section>
+
+<style>
+  /*
+   * H1 marks: a swash under "Awesome Labs" and highlighter washes behind the
+   * two noun phrases.
+   *
+   * Both are drawn as SVG background-images on the inline span, NOT as
+   * absolutely-positioned pseudo-elements. That is the load-bearing decision.
+   * At its 19ch measure this H1 wraps to four lines and both phrases break
+   * across them ("health," / "wellness"); an absolutely-positioned ::before
+   * would cover the union rectangle of those fragments and paint a block
+   * through the middle of the headline. A background-image plus
+   * box-decoration-break:clone gives every fragment its own mark.
+   *
+   * The SVGs stretch with preserveAspectRatio='none'. Both are filled shapes
+   * rather than strokes for that reason — a stroked path under non-uniform
+   * scaling would thin out vertically as the text got wider.
+   *
+   * Every dimension is in `em`, so the marks track the H1's clamp() from 38px
+   * to 76px with no separate mobile values.
+   *
+   * The fill hexes below are the --color-al-hl-* / --color-al-accent tokens,
+   * duplicated here because a data URI cannot read a custom property. Change
+   * a token in global.css and you MUST change its twin here.
+   */
+  .al-swash,
+  .al-hl {
+    background-repeat: no-repeat;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  /*
+   * Underline under "Awesome Labs". #2e6f68 = accent.
+   *
+   * Near-straight by design: the edges drift about 1.5 units across a 12-unit
+   * viewBox, which at final size is well under a pixel of deviation per
+   * hundred pixels of width. It reads as a drawn line rather than a border
+   * without looking wobbly. Earlier versions curved ~5 units and looked
+   * squiggly once stretched across the full phrase.
+   */
+  .al-swash {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'%3E%3Cpath d='M2 5.4C60 4.2 140 3.6 198 3.2v3.2C140 6.8 60 7.4 2 8.6z' fill='%232e6f68'/%3E%3C/svg%3E");
+    /*
+     * The ribbon occupies ~36% of the SVG's height, so the visible stroke is
+     * 0.36 x this box: about 0.072em, which lands near 5.5px against the 76px
+     * desktop H1 and 2.7px against the 38px mobile one. Sizing the box to the
+     * stroke you want directly will give you something a third as thick.
+     */
+    background-size: 100% 0.22em;
+    background-position: 0 100%;
+    padding-bottom: 0.04em;
+  }
+
+  /*
+   * Highlighter wash. Sized to about 60% of the glyph height and bottom-
+   * anchored so it covers the x-height and lets ascenders rise clear of it,
+   * which is how a real marker lands. The slight horizontal bleed stops the
+   * wash ending flush with the first and last glyph.
+   */
+  .al-hl {
+    /*
+     * The band fills ~62% of the SVG box, so this 0.78em box yields a wash
+     * about 0.48em tall — close to Bricolage's x-height, which is what makes
+     * it sit like a marker stroke rather than a full-height chip.
+     */
+    background-size: 100% 0.78em;
+    background-position: 0 calc(100% - 0.05em);
+    padding-inline: 0.09em;
+  }
+
+  /* #bcdcd4 = --color-al-hl-cool */
+  .al-hl--cool {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 40' preserveAspectRatio='none'%3E%3Cpath d='M2 9C60 7.4 140 7.8 198 6.6v25.8C140 33.6 60 33.2 2 32z' fill='%23bcdcd4'/%3E%3C/svg%3E");
+  }
+
+  /* #f7d7a4 = --color-al-hl-warm, descended from the logo star */
+  .al-hl--warm {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 40' preserveAspectRatio='none'%3E%3Cpath d='M2 7.4C60 8.6 140 6.8 198 8.2v25.2C140 32.2 60 34 2 32.6z' fill='%23f7d7a4'/%3E%3C/svg%3E");
+  }
+
+  /*
+   * Animated gradient text. The colour is painted as a background and clipped
+   * to the glyphs, then the background slides.
+   *
+   * Three details that are load-bearing:
+   *
+   * 1. The gradient lists TWO full cycles of the four stops across a 200%-wide
+   *    background. That is what makes the loop seamless: at background-position
+   *    100% the visible half is pattern-identical to the half visible at 0%, so
+   *    the animation can run linear and infinite with no jump at the wrap.
+   *
+   * 2. Position animates 100% -> 0%. Percentage background-position with an
+   *    oversized image is counterintuitive: INCREASING the percentage shifts
+   *    the image left, which would sweep the colours right-to-left. Decreasing
+   *    it sweeps left-to-right, which is what was asked for.
+   *
+   * 3. box-decoration-break: clone gives each wrapped line its own full run of
+   *    the gradient. Without it the browser treats the inline box as one
+   *    fragmented rectangle and the last line ends up a single flat colour.
+   */
+  .al-spark {
+    /* Fallback for anything without background-clip: text — see @supports. */
+    color: var(--color-al-spark-1);
+  }
+
+  @supports (background-clip: text) or (-webkit-background-clip: text) {
+    .al-spark {
+      background-image: linear-gradient(
+        90deg,
+        var(--color-al-spark-1),
+        var(--color-al-spark-2),
+        var(--color-al-spark-3),
+        var(--color-al-spark-4),
+        var(--color-al-spark-1),
+        var(--color-al-spark-2),
+        var(--color-al-spark-3),
+        var(--color-al-spark-4),
+        var(--color-al-spark-1)
+      );
+      background-size: 200% 100%;
+      background-position: 100% 0;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+      animation: al-spark-sweep 5s linear infinite;
+    }
+
+    /*
+     * Selected text would otherwise be invisible: the fill is transparent, so
+     * the highlight paints under glyphs that are not there. Restore a solid
+     * fill while selected so the sentence can still be read and copied.
+     */
+    .al-spark::selection {
+      -webkit-text-fill-color: var(--color-al-ink);
+      color: var(--color-al-ink);
+      background: var(--color-al-deep-accent);
+    }
+  }
+
+  @keyframes al-spark-sweep {
+    from {
+      background-position: 100% 0;
+    }
+    to {
+      background-position: 0% 0;
+    }
+  }
+
+  /*
+   * global.css already crushes animation-duration for reduced-motion, but that
+   * leaves this element mid-sweep at an arbitrary frame. Stopping it explicitly
+   * at a defined position keeps the multi-colour treatment while removing the
+   * motion, which is the point of the preference.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    .al-spark {
+      animation: none;
+      background-position: 100% 0;
+    }
+  }
+</style>
