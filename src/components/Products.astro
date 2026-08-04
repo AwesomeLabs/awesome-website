@@ -1,0 +1,66 @@
+---
+import ProductCard from '@/components/ProductCard.astro';
+import { products } from '@/data/products';
+---
+
+{
+  /*
+  No top padding: the hero's bottom padding already sets the gap. The bottom
+  padding here is the gap before the dark "Work with us" band, so it belongs
+  on this section rather than on that one.
+
+  The grid must stay INSIDE this section: `al-shell` caps it at 1440px and
+  `px-al-gutter` supplies the clamp(20px,5vw,56px) inset every band shares.
+  Lifted out, the cards run edge to edge with no side margin.
+
+  The grid is the handoff's `auto-fit, minmax(248px, 1fr)`, with one override:
+  4-up at >=1176px, 2-up from 640 to 1175, 1-up below. The handoff's 3-up band
+  is deliberately skipped — see the note on the media query at the foot of this
+  file.
+*/
+}
+<section id="products" class="al-shell px-al-gutter pb-al-products-bottom">
+  <div class="mx-auto mb-al-heading-mb max-w-[62ch] text-center">
+    <h2 class="font-head text-al-h2 font-semibold">Some of our apps</h2>
+  </div>
+
+  <div
+    class="product-grid grid grid-cols-[repeat(auto-fit,minmax(248px,1fr))] gap-al-grid-gap"
+  >
+    {
+      products.map((product, i) => (
+        <ProductCard product={product} eager={i === 0} />
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  /*
+   * Force 2x2 through the middle of the range.
+   *
+   * The handoff's `auto-fit, minmax(248px, 1fr)` is otherwise untouched, but it
+   * assumes a product count that divides evenly into whatever column count it
+   * lands on. With exactly four products it picks three columns from roughly
+   * 880px to 1180px, stranding the fourth alone on a second row — which reads
+   * as a broken row rather than a designed one.
+   *
+   * Bounds are measured, not guessed. Solving the auto-fit maths against this
+   * page's gutter and gap clamps gives the real transitions: 2-up at 569px,
+   * 3-up at 874px, 4-up at 1176px. So the override runs 640px to 1175px — it
+   * covers the whole 3-up band and stops one pixel short of 4-up.
+   *
+   * The handoff's "4-up ≥1180" is approximate; taking it literally left a
+   * four-pixel window at 1176-1179 where four columns fit but this rule was
+   * still forcing two, producing 520px cards.
+   *
+   * REVISIT IF THE PRODUCT COUNT CHANGES. At five or six products auto-fit's
+   * own choice is likely right and this override becomes the thing creating
+   * an orphan.
+   */
+  @media (min-width: 640px) and (max-width: 1175px) {
+    .product-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

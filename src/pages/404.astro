@@ -1,0 +1,28 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+---
+
+<BaseLayout title="Page not found | Awesome Labs" path="/404/" noindex>
+  <Header />
+  <main
+    id="main-content"
+    class="al-shell px-al-gutter pt-al-hero-top pb-al-products-bottom text-center"
+  >
+    <h1 class="mx-auto max-w-[20ch] text-balance font-head text-al-h2 font-semibold">
+      That page does not exist.
+    </h1>
+    <p class="mx-auto mt-4 max-w-[46ch] text-al-body text-al-ink/75">
+      The link may be out of date. Our products all live on their own sites now, so try the
+      homepage.
+    </p>
+    <a
+      href="/"
+      class="mt-8 inline-flex min-h-13 items-center rounded-full bg-al-ink px-8 py-4 text-[15px] text-al-paper transition-colors duration-200 hover:bg-al-accent"
+    >
+      Back to the homepage
+    </a>
+  </main>
+  <Footer />
+</BaseLayout>

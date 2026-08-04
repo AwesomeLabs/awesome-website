@@ -1,0 +1,39 @@
+---
+import { LINKS } from '@/config';
+---
+
+{
+  /*
+  Full-bleed dark band with capped content inside it (see the al-shell note in
+  global.css). `al-on-deep` swaps the focus ring to the light ink — the default
+  dark ring would vanish against this background.
+
+  The prototype renders the CTA as a <button> with no handler. It is an <a>
+  here: it navigates to mail, and a button that navigates is a button a
+  keyboard user cannot open in a new tab.
+*/
+}
+<section id="work" class="al-on-deep bg-al-deep py-al-work-y text-al-deep-ink">
+  <div
+    class="al-shell grid grid-cols-[repeat(auto-fit,minmax(340px,1fr))] items-center gap-al-work-gap px-al-gutter"
+  >
+    <h2 class="max-w-[18ch] text-pretty font-head text-al-h2-lg font-semibold">
+      Work with us. Our apps reach hundreds of thousands of people, and <span
+        class="text-al-deep-accent">yours could be next.</span
+      >
+    </h2>
+
+    <div>
+      <p class="max-w-[46ch] text-al-lead text-al-deep-ink/85">
+        Working on something amazing? We help select clients bring their mobile,
+        AI, and onchain projects from concept to launch.
+      </p>
+      <a
+        href={LINKS.contact}
+        class="mt-7 inline-flex min-h-13 items-center rounded-full bg-al-deep-ink px-8 py-4 text-[15px] text-al-deep transition-colors duration-200 hover:bg-al-deep-accent"
+      >
+        Get in touch! →
+      </a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,31 @@
+{
+  "name": "awesome-labs-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "@fontsource-variable/bricolage-grotesque": "^5.2.7",
+    "@fontsource/space-grotesk": "^5.2.6",
+    "@tailwindcss/vite": "^4.3.1",
+    "astro": "^6.0.5",
+    "sharp": "^0.35.1",
+    "tailwindcss": "^4.3.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "vite": "~7.3.5"
+  }
+}

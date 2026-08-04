@@ -1,3 +1,17 @@
-.DS_Store
-readme.txt
+# build output
+dist/
+.astro/
 
+# dependencies
+node_modules/
+
+# netlify
+.netlify/
+
+# macOS
+.DS_Store
+
+# environment — MAILCHIMP_API_KEY etc. live in Netlify env vars, never here
+.env
+.env.production
+.env*.local

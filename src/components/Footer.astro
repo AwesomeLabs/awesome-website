@@ -1,0 +1,31 @@
+---
+import { SITE } from '@/config';
+import { footerLinks } from '@/data/nav';
+
+/**
+ * Built at deploy time, so the year is right without a client-side script and
+ * without anyone remembering to edit it each January.
+ */
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-al-paper text-al-footer text-al-ink/70">
+  <div
+    class="al-shell flex flex-wrap justify-between gap-x-6 gap-y-3 border-t border-al-ink/12 px-al-gutter pt-al-footer-top pb-al-footer-bottom"
+  >
+    <span>&copy; {year} {SITE.legalName}</span>
+    <nav aria-label="Footer">
+      <ul class="flex flex-wrap gap-x-[22px] gap-y-2">
+        {
+          footerLinks.map((link) => (
+            <li>
+              <a href={link.href} class="text-al-ink/70 no-underline transition-colors duration-200 hover:text-al-accent">
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</footer>

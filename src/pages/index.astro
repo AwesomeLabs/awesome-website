@@ -1,0 +1,45 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Hero from '@/components/Hero.astro';
+import Products from '@/components/Products.astro';
+import WorkWithUs from '@/components/WorkWithUs.astro';
+import MailingList from '@/components/MailingList.astro';
+import Footer from '@/components/Footer.astro';
+import { SITE } from '@/config';
+import { products } from '@/data/products';
+
+/**
+ * The four products as a named list, so a search result for the studio can
+ * surface what it makes. ItemList rather than four SoftwareApplication nodes:
+ * each app has its own site, and those sites are the right place to describe
+ * the app in full — duplicating it here would compete with them.
+ */
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Awesome Labs products',
+    itemListOrder: 'https://schema.org/ItemListUnordered',
+    numberOfItems: products.length,
+    itemListElement: products.map((product, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: product.name,
+      description: product.tag,
+      url: product.href,
+    })),
+  },
+];
+---
+
+<BaseLayout path="/" schema={schema} ogImageAlt={`${SITE.name}, ${SITE.socialTitle}`}>
+  <Header />
+  <main id="main-content">
+    <Hero />
+    <Products />
+    <WorkWithUs />
+    <MailingList />
+  </main>
+  <Footer />
+</BaseLayout>

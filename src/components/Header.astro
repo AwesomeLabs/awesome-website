@@ -1,0 +1,475 @@
+---
+import { Image } from 'astro:assets';
+import logo from '@/assets/logo-ink.png';
+import { SITE, LINKS } from '@/config';
+import { navLinks } from '@/data/nav';
+
+/**
+ * On the homepage the logo is decorative-adjacent (it links to the top of the
+ * page you are already on); on subpages it is the way back home. Rendering it
+ * as a link either way keeps one code path, and `aria-current` tells a screen
+ * reader which case it is.
+ */
+const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '';
+const year = new Date().getFullYear();
+---
+
+{
+  /*
+  Handoff: flex row, space-between, wraps, gap 16px 24px, no bottom padding
+  (the hero owns the space below). Below 720px the nav collapses into the
+  full-screen panel specified under "Mobile navigation (≤720px)".
+*/
+}
+{/*
+  Two elements, not one. The outer <header> carries the sticky positioning and
+  the background, so the background is full-bleed; the inner div keeps the
+  content capped at 1440px. Sticking the capped element instead would leave
+  strips either side of it on wide screens where the page scrolls through.
+*/}
+<header class="site-header">
+  <div
+    class="header-inner al-shell flex flex-wrap items-center justify-between gap-x-6 gap-y-4 px-al-gutter pt-al-header-y"
+  >
+  <a href="/" aria-current={isHome ? 'page' : undefined} class="inline-flex">
+    <Image
+      src={logo}
+      alt={SITE.name}
+      widths={[200, 400]}
+      sizes="200px"
+      class="block h-al-logo w-auto"
+      loading="eager"
+    />
+  </a>
+
+  {
+    /*
+    Three bars that rotate into an X rather than two swapped glyphs. The bars
+    are spans, not an SVG, because the handoff animates them individually
+    (top and bottom rotate, middle fades) on different durations.
+  */
+  }
+  <button
+    type="button"
+    class="nav-toggle"
+    aria-controls="site-nav"
+    aria-expanded="false"
+    aria-label="Menu"
+  >
+    <span class="nav-bars" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+  </button>
+
+  <nav id="site-nav" class="site-nav" data-open="false" aria-label="Primary">
+    <ul class="nav-list">
+      {
+        navLinks.map((link) => (
+          <li>
+            {/* 44px min height is a handoff requirement, not a default —
+                these are small text links and would otherwise be ~20px.
+                In the panel the rows grow to ~68px. */}
+            <a
+              href={link.href}
+              class="nav-link flex min-h-11 items-center font-semibold text-al-ink/85 transition-colors duration-200 hover:text-al-accent"
+            >
+              {link.label}
+              {/* Panel-only affordance; hidden at desktop by CSS. */}
+              <span class="nav-arrow" aria-hidden="true">
+                →
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    {
+      /*
+      Panel footer block. Rendered on every page but only ever displayed
+      inside the open panel — see the display:none default below.
+    */
+    }
+    <div class="nav-panel-footer">
+      <p class="nav-tagline">
+        A health, wellness <span class="text-al-accent">+</span> emerging technology
+        studio.
+      </p>
+      <a href={LINKS.contact} class="nav-cta">Get in touch! →</a>
+    </div>
+  </nav>
+  </div>
+</header>
+
+<style>
+  /*
+   * Everything below is gated on `html.js`, set by a blocking inline script in
+   * BaseLayout before this markup is parsed.
+   *
+   * Two reasons, both load-bearing:
+   *
+   * 1. No JavaScript, no broken nav. A panel whose only way open is a click
+   *    handler would leave a non-JS visitor with a dead button and an
+   *    unreachable menu. Gated this way they keep the handoff's earlier
+   *    behaviour: the nav simply wraps under the logo.
+   * 2. No flash. Collapsing from the module script instead would paint the
+   *    full nav and snap it shut on hydration, since module scripts defer.
+   */
+
+  /* Desktop is the default; the panel's parts do not exist there. */
+  .nav-toggle,
+  .nav-arrow,
+  .nav-panel-footer {
+    display: none;
+  }
+
+  .nav-list {
+    display: flex;
+    gap: var(--spacing-al-nav-gap);
+    font-size: var(--text-al-nav);
+  }
+
+  /*
+   * Sticky above the mobile breakpoint only. On phones the header stays in
+   * flow: a sticky bar costs real estate on a small screen, and the menu
+   * already pins the header for as long as the panel is open.
+   *
+   * The handoff draws a static header at every width, so this is a deliberate
+   * divergence, requested by the client.
+   *
+   * The background is required, not decorative — without it the page would
+   * scroll visibly through the header. It also needs a bottom inset for the
+   * same reason: the header box ends at the logo's baseline, so content would
+   * otherwise slide up and touch the wordmark before disappearing.
+   */
+  @media (min-width: 721px) {
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      background: var(--color-al-paper);
+      padding-bottom: var(--spacing-al-header-pb);
+    }
+
+    /*
+     * Tighter top inset than the phone header. Overriding the utility rather
+     * than lowering --spacing-al-header-y, whose 20px floor is the phone value
+     * and cannot be undercut from the same clamp.
+     */
+    .header-inner {
+      padding-top: var(--spacing-al-header-y-lg);
+    }
+  }
+
+  @media (max-width: 720px) {
+    :global(html.js) .nav-toggle {
+      /* 48x48 hit area; -8px so the bars optically align with the content edge. */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      margin-right: -8px;
+      /* Above the panel, so it doubles as the close control. */
+      position: relative;
+      z-index: 60;
+      color: var(--color-al-ink);
+    }
+
+    .nav-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .nav-bars > span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      border-radius: 2px;
+      background: currentColor;
+      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .nav-bars > span:nth-child(2) {
+      transition: opacity 0.18s ease;
+    }
+
+    .nav-toggle[aria-expanded='true'] .nav-bars > span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .nav-toggle[aria-expanded='true'] .nav-bars > span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle[aria-expanded='true'] .nav-bars > span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /*
+     * The panel fully replaces the page: opaque, no scrim. It stays mounted
+     * when closed (per the handoff) so it can animate, which is why closed
+     * state needs pointer-events:none — and why the script also marks it
+     * `inert`, or its links would still take keyboard focus and be announced.
+     */
+    :global(html.js) .site-nav {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: var(--color-al-paper);
+      /*
+       * The handoff specifies a flat 96px top inset. That happens to clear the
+       * header at today's sizes (~68px at 390px wide) but it is a coincidence,
+       * not a guarantee: the header's padding and logo are both clamp()-based
+       * and its row height is set by the 48px toggle, so anything that grows
+       * any of those starts overlapping the first link.
+       *
+       * --al-header-h is measured from the real element by the script below,
+       * so the gap holds at any size. The 68px fallback keeps the spec's
+       * 96px total if the script has not run yet.
+       */
+      padding: calc(var(--al-header-h, 68px) + 28px) 24px 32px;
+      opacity: 0;
+      transform: translateY(-12px);
+      pointer-events: none;
+      transition:
+        opacity 0.28s ease,
+        transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    :global(html.js) .site-nav[data-open='true'] {
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+    }
+
+    /*
+     * While the panel is open the header is pinned to the top of the viewport.
+     * The handoff only says the header sits above the panel, which is true at
+     * scroll position 0 — but a static header opened from halfway down the
+     * page would be scrolled out of view, leaving the panel with no visible
+     * close control. Scroll is locked at the same moment, so nothing moves
+     * under it.
+     */
+    :global(html.js.nav-open) .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 60;
+    }
+
+    /* Centres the links in the space between header and footer block. */
+    :global(html.js) .nav-list {
+      display: block;
+      margin: auto 0;
+      font-size: inherit;
+    }
+
+    :global(html.js) .nav-link {
+      justify-content: space-between;
+      padding: 22px 4px;
+      border-top: 1px solid --alpha(var(--color-al-ink) / 10%);
+      font-family: var(--font-head);
+      font-weight: 600;
+      font-size: var(--text-al-mobile-nav);
+      line-height: var(--text-al-mobile-nav--line-height);
+      letter-spacing: var(--text-al-mobile-nav--letter-spacing);
+      color: var(--color-al-ink);
+    }
+
+    :global(html.js) .site-nav li:last-child .nav-link {
+      border-bottom: 1px solid --alpha(var(--color-al-ink) / 10%);
+    }
+
+    :global(html.js) .nav-link:active {
+      color: var(--color-al-accent);
+    }
+
+    :global(html.js) .nav-arrow {
+      display: inline;
+      font-size: 18px;
+      color: var(--color-al-accent);
+    }
+
+    :global(html.js) .nav-panel-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .nav-tagline {
+      font-family: var(--font-head);
+      font-size: 19px;
+      line-height: 1.4;
+      /*
+       * The handoff says 60% ink here and 50% on the copyright. Both fail WCAG
+       * AA on this background (4.28:1 and ~3.3:1), so they follow the darker
+       * values already applied site-wide during the accessibility pass.
+       */
+      color: --alpha(var(--color-al-ink) / 75%);
+    }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 56px;
+      border-radius: 999px;
+      background: var(--color-al-deep);
+      color: var(--color-al-deep-ink);
+      font-size: 15px;
+      transition: background 0.2s;
+    }
+
+    .nav-cta:hover {
+      background: var(--color-al-accent);
+    }
+
+    .nav-copyright {
+      font-size: var(--text-al-footer);
+      color: --alpha(var(--color-al-ink) / 70%);
+    }
+
+    /*
+     * Scroll lock. On both elements because which one owns the scroll differs
+     * between engines, and locking only <body> lets iOS Safari scroll the page
+     * behind the panel.
+     */
+    :global(html.js.nav-open),
+    :global(html.js.nav-open body) {
+      overflow: hidden;
+    }
+
+    /* Without JS the panel never engages, so the nav just wraps as before. */
+    :global(html:not(.js)) .site-nav {
+      width: 100%;
+    }
+  }
+
+  /* The handoff's only reduced-motion instruction is to drop the translate. */
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.js) .site-nav {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('.site-header');
+  const toggle = document.querySelector<HTMLButtonElement>('.nav-toggle');
+  const nav = document.getElementById('site-nav');
+
+  if (header && toggle && nav) {
+    const mobile = window.matchMedia('(max-width: 720px)');
+
+    /**
+     * Closed-but-mounted content is still focusable and still announced, so
+     * `inert` does the work that `display:none` would have done if the panel
+     * were not being animated. Only ever set below the breakpoint — above it
+     * this element is the desktop nav.
+     */
+    const syncInert = () => {
+      const shouldBeInert = mobile.matches && nav.dataset.open !== 'true';
+      nav.toggleAttribute('inert', shouldBeInert);
+    };
+
+    /**
+     * Publishes the header's real height so the panel can inset its content
+     * below it instead of trusting a hard-coded figure. Measured rather than
+     * computed because the height comes from three clamp()-based values plus
+     * the toggle's 48px box.
+     */
+    const measureHeader = () => {
+      document.documentElement.style.setProperty(
+        '--al-header-h',
+        `${header.offsetHeight}px`,
+      );
+    };
+
+    const setOpen = (open: boolean) => {
+      // Before opening, so the first paint of the panel already has the gap.
+      if (open) measureHeader();
+      nav.dataset.open = String(open);
+      toggle.setAttribute('aria-expanded', String(open));
+      // Drives the scroll lock and the pinned header, both of which have to
+      // apply to elements outside this component.
+      document.documentElement.classList.toggle('nav-open', open);
+      syncInert();
+    };
+
+    toggle.addEventListener('click', () =>
+      setOpen(nav.dataset.open !== 'true'),
+    );
+
+    /*
+     * Every link either loads another page or jumps to an anchor on this one.
+     * The anchor case does not reload, so without this the panel would stay
+     * open on top of the section it just scrolled to.
+     */
+    nav.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('a')) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (nav.dataset.open !== 'true') return;
+
+      if (event.key === 'Escape') {
+        setOpen(false);
+        // Or focus would be left on an element that is now inert.
+        toggle.focus();
+        return;
+      }
+
+      /*
+       * Focus trap. The panel covers the entire viewport, so tabbing past its
+       * last link would move focus to page content nobody can see.
+       */
+      if (event.key === 'Tab') {
+        const focusable = [
+          toggle,
+          ...nav.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled])',
+          ),
+        ];
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    });
+
+    /*
+     * Crossing the breakpoint while open would otherwise leave the page
+     * scroll-locked and aria-expanded="true" on a button that is no longer
+     * displayed.
+     */
+    mobile.addEventListener('change', () => {
+      if (!mobile.matches) setOpen(false);
+      else syncInert();
+    });
+
+    /*
+     * The header's height is fluid, so a rotation or a resize while the panel
+     * is open would leave the inset measured against the old width. Only
+     * re-measures while open — there is nothing to keep in sync otherwise.
+     */
+    window.addEventListener('resize', () => {
+      if (nav.dataset.open === 'true') measureHeader();
+    });
+
+    syncInert();
+  }
+</script>

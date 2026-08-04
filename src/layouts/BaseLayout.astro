@@ -1,0 +1,194 @@
+---
+import '@fontsource-variable/bricolage-grotesque/wght.css';
+import '@fontsource/space-grotesk/latin-400.css';
+import '@fontsource/space-grotesk/latin-500.css';
+// 600 is loaded for the header nav only. Without the real face the browser
+// synthesises a bold by smearing the 400, which looks muddy at 15px.
+import '@fontsource/space-grotesk/latin-600.css';
+import bricolageWght from '@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url';
+import spaceGrotesk400 from '@fontsource/space-grotesk/files/space-grotesk-latin-400-normal.woff2?url';
+import '@/styles/global.css';
+import { SITE, LINKS, GA4_MEASUREMENT_ID } from '@/config';
+
+interface Props {
+  /** Search: `<title>`. Include the brand — see the SITE docblock. */
+  title?: string;
+  /** Search: `meta description`. Aim under ~155 characters. */
+  description?: string;
+  /**
+   * Social: `og:title` / `twitter:title`. Optional — by default the brand
+   * suffix is stripped off `title`, since `og:site_name` already shows it.
+   */
+  ogTitle?: string;
+  /** Social: `og:description` / `twitter:description`. Aim under ~125. */
+  ogDescription?: string;
+  /** Page path used for the canonical URL, e.g. "/" */
+  path?: string;
+  noindex?: boolean;
+  /** OG/Twitter image path, resolved against SITE.url. */
+  ogImage?: string;
+  ogImageAlt?: string;
+  /** Extra JSON-LD objects injected alongside the site-wide ones. */
+  schema?: Record<string, unknown>[];
+}
+
+const {
+  title = SITE.title,
+  description = SITE.description,
+  ogTitle,
+  ogDescription,
+  path = '/',
+  noindex = false,
+  ogImage = '/og/home.png',
+  ogImageAlt = 'Awesome Labs, a health, wellness and emerging technology studio',
+  schema = [],
+} = Astro.props;
+
+/**
+ * Social copy, derived rather than duplicated at every call site. A page that
+ * sets nothing gets the purpose-written SITE.social* strings; a page with its
+ * own title gets that title minus the " | Awesome Labs" suffix, because the
+ * card renders og:site_name right above it.
+ */
+const usesSiteCopy = title === SITE.title;
+const socialTitle =
+  ogTitle ?? (usesSiteCopy ? SITE.socialTitle : title.replace(` | ${SITE.name}`, ''));
+const socialDescription =
+  ogDescription ?? (description === SITE.description ? SITE.socialDescription : description);
+
+/**
+ * Analytics gate. `Astro.site` comes from astro.config.mjs, which reads
+ * AL_SITE_URL — so preview deploys resolve to a different host and emit no
+ * tags, keeping their traffic out of both Plausible and GA4.
+ */
+const isProductionHost = Astro.site?.hostname === new URL(SITE.url).hostname;
+
+const canonical = new URL(path, SITE.url).href;
+const ogImageUrl = new URL(ogImage, SITE.url).href;
+
+const baseSchema: Record<string, unknown>[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': `${SITE.url}/#organization`,
+    name: SITE.name,
+    legalName: SITE.legalName,
+    url: `${SITE.url}/`,
+    logo: `${SITE.url}/favicons/favicon-228.png`,
+    email: SITE.email,
+    sameAs: [LINKS.instagram, LINKS.twitter],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${SITE.url}/#website`,
+    name: SITE.name,
+    url: `${SITE.url}/`,
+    publisher: { '@id': `${SITE.url}/#organization` },
+  },
+];
+const allSchema = [...baseSchema, ...schema];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {/* No canonical on noindex pages: /404 is built as 404.html, so a
+        canonical pointing at /404/ would name a URL that does not exist. */}
+    {!noindex && <link rel="canonical" href={canonical} />}
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {/* Matches --color-al-paper, the page background. */}
+    <meta name="theme-color" content="#f2f7f6" />
+
+    {/*
+      Marks that scripting is available, before any markup is parsed. The
+      mobile nav collapse is gated on this class so that (a) a visitor without
+      JavaScript keeps a working, wrapping nav instead of a dead hamburger, and
+      (b) the menu never renders open and then snaps shut, which is what
+      collapsing from a deferred module script would do. Inline and blocking on
+      purpose — deferring it would defeat both points.
+    */}
+    <script is:inline>document.documentElement.classList.add('js');</script>
+
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16.png" />
+    <link rel="apple-touch-icon" href="/favicons/favicon-180.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    {/* Only the two faces above the fold are preloaded: the Bricolage weight
+        axis (hero H1 and statement) and Space Grotesk 400 (nav and body).
+        Space Grotesk 500 is not — nothing in the first viewport uses it. */}
+    <link rel="preload" as="font" type="font/woff2" href={bricolageWght} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={spaceGrotesk400} crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={socialTitle} />
+    <meta property="og:description" content={socialDescription} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content={SITE.twitterHandle} />
+    <meta name="twitter:creator" content={SITE.twitterHandle} />
+    <meta name="twitter:title" content={socialTitle} />
+    <meta name="twitter:description" content={socialDescription} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
+
+    {allSchema.map((s) => <script is:inline type="application/ld+json" set:html={JSON.stringify(s)} />)}
+
+    {/*
+      Two analytics tools, deliberately.
+
+      Plausible is the primary. It is installed the plain <script> way and is
+      PROXIED FIRST-PARTY: netlify.toml rewrites /js/pa.js -> plausible.io and
+      /api/e -> plausible.io/api/event at status 200, so the browser only ever
+      talks to this origin. Neither URL below is a real file. `endpoint` is not
+      optional once proxied — without it the tracker posts to plausible.io
+      directly, which the CSP refuses. The proxy paths, the src, and the
+      endpoint are one unit: change any alone and events stop arriving
+      silently. There is no data-domain — this tracker identifies the site by
+      the ID in the script filename, which lives in netlify.toml.
+
+      GA4 is carried over from the legacy site so its history stays continuous.
+      It CANNOT be proxied the same way (gtag.js hardcodes its own collect
+      endpoints), which is why netlify.toml's CSP has explicit exceptions for
+      googletagmanager.com and *.google-analytics.com. Those three exceptions
+      exist only for this tag — remove the tag and they should go too.
+
+      Both are gated to the production host so preview traffic stays out.
+    */}
+    {
+      isProductionHost && (
+        <Fragment>
+          <script is:inline async src="/js/pa.js" />
+          <script
+            is:inline
+            set:html={`window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init({endpoint:"/api/e",outboundLinks:true})`}
+          />
+          <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA4_MEASUREMENT_ID}`} />
+          <script
+            is:inline
+            set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${GA4_MEASUREMENT_ID}')`}
+          />
+        </Fragment>
+      )
+    }
+  </head>
+  <body class="bg-al-paper font-sans text-al-ink">
+    <a href="#main-content" class="skip-to-content">Skip to content</a>
+    <slot />
+  </body>
+</html>

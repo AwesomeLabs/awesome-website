@@ -1,0 +1,362 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens from design_handoff_awesome_labs_homepage/README.md
+ * ("mist + teal", direction 3a). Token names carry an `al-` prefix so they
+ * stay greppable against the spec. In Tailwind v4 each entry below becomes a
+ * utility: --color-al-accent -> bg-al-accent / text-al-accent,
+ * --radius-al-card -> rounded-al-card, --text-al-h1 -> text-al-h1.
+ *
+ * No component should carry a raw hex or a raw clamp(). If something is
+ * missing, add the token here — the palette and the type ramp are meant to be
+ * swappable in one place.
+ */
+@theme {
+  /* ---------------------------------------------------------------- type */
+
+  /*
+   * Bricolage Grotesque is variable on the weight axis, so 400/600/700 all
+   * come from one file. Space Grotesk is static (400/500).
+   * IBM Plex Mono from the handoff is deliberately NOT here: its only use was
+   * labelling the striped image placeholders, which this build does not ship.
+   */
+  --font-head: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+  --font-sans: 'Space Grotesk', system-ui, sans-serif;
+
+  /*
+   * The handoff's Typography table, verbatim. Every display size is fluid via
+   * clamp(min, vw, max) — that is the whole responsive strategy for type, and
+   * it is why this build has almost no breakpoints. Line height and tracking
+   * ride along on each size so a single `text-al-h1` reproduces the full row.
+   */
+  --text-al-h1: clamp(38px, 6.6vw, 76px);
+  --text-al-h1--line-height: 1.02;
+  --text-al-h1--letter-spacing: -0.03em;
+
+  --text-al-statement: clamp(21px, 3.3vw, 38px);
+  --text-al-statement--line-height: 1.3;
+
+  /*
+   * Section headings.
+   *
+   * REDUCED FROM THE HANDOFF, which specifies clamp(28px, 4vw, 42px). At that
+   * size the section heading topped out ABOVE the hero statement (38px), so
+   * "Some of our apps" out-scaled the sentence it sits directly beneath and
+   * the page had two competing focal points in the first two screens.
+   *
+   * The ramp now descends cleanly: H1 76 > work-with-us 52 > statement 38 >
+   * section heading 32. Work-with-us keeps its larger --text-al-h2-lg because
+   * it anchors a full-bleed band of its own, far from the hero.
+   */
+  --text-al-h2: clamp(24px, 3.1vw, 32px);
+  --text-al-h2--line-height: 1.15;
+  --text-al-h2--letter-spacing: -0.02em;
+
+  /* Work-with-us runs larger than the other H2s and tracks its own line height. */
+  --text-al-h2-lg: clamp(32px, 4.6vw, 52px);
+  --text-al-h2-lg--line-height: 1.05;
+  --text-al-h2-lg--letter-spacing: -0.03em;
+
+  /*
+   * The signup H2 is the one H2 that tracks at -.02em rather than -.03em
+   * (handoff Typography table). Same size ramp, so it rides on --text-al-h2
+   * with this applied over it rather than becoming a fourth H2 size.
+   */
+  --tracking-al-h2-signup: -0.02em;
+
+  --text-al-lead: clamp(16px, 2.1vw, 19px);
+  --text-al-lead--line-height: 1.6;
+
+  /*
+   * Standfirst on a subpage. Sits between the page heading (32px) and body
+   * (17px) — the homepage gets the same effect from --text-al-statement, but
+   * that tops out at 38px and would out-scale a subpage's own h1.
+   */
+  --text-al-page-lead: clamp(19px, 2.6vw, 24px);
+  --text-al-page-lead--line-height: 1.45;
+
+  --text-al-body: clamp(15px, 1.9vw, 17px);
+  --text-al-body--line-height: 1.6;
+
+  --text-al-nav: clamp(14px, 1.6vw, 15px);
+
+  /* Mobile menu panel rows. Fixed 32px — the panel is only ever ≤720px wide. */
+  --text-al-mobile-nav: 32px;
+  --text-al-mobile-nav--line-height: 1.1;
+  --text-al-mobile-nav--letter-spacing: -0.03em;
+
+  --text-al-card-name: 22px;
+  --text-al-card-name--line-height: 1.2;
+  --text-al-card-name--letter-spacing: -0.02em;
+
+  --text-al-card-blurb: 15px;
+  --text-al-card-blurb--line-height: 1.6;
+
+  --text-al-card-tag: 13px;
+  --text-al-card-tag--line-height: 1.2;
+
+  --text-al-footer: 13px;
+  --text-al-footer--line-height: 1.2;
+
+  /* -------------------------------------------------------------- colour */
+
+  /*
+   * Ink is #16211f = rgb(22,33,31), which is exactly the rgba() the handoff
+   * writes its secondary text in. So its opacity steps are reached with
+   * Tailwind's opacity modifier — text-al-ink/70 IS rgba(22,33,31,.7). No
+   * separate tokens for those; adding them would mean two ways to say the
+   * same colour.
+   *
+   * ACCESSIBILITY DEVIATION — the opacity steps used in components are darker
+   * than the handoff's. Measured against their actual backgrounds, five of the
+   * spec's values fail WCAG AA (4.5:1 for normal text):
+   *
+   *   signup body      band-ink/72 on band   4.26:1  -> /85  5.72:1
+   *   input placeholder band-ink/45 on field 2.78:1  -> /65  5.04:1
+   *   footer text      ink/55 on paper       3.68:1  -> /70  5.88:1
+   *   hero lead-in     ink/55 on paper       3.68:1  -> /70  5.88:1
+   *   eyebrow / 404    ink/55-60 on paper    3.68:1  -> /75  6.95:1
+   *
+   * Card blurb (/62, 4.68:1) and nav (/70) passed but were darkened too, for
+   * consistency and because both are small text. If you are diffing against
+   * the prototype these will read as too dark — that is deliberate. Re-run the
+   * contrast maths before lightening anything back toward the spec.
+   */
+  --color-al-ink: #16211f;
+  --color-al-paper: #f2f7f6;
+  --color-al-card: #ffffff;
+  --color-al-accent: #2e6f68;
+
+  /*
+   * Spark ramp — the animated gradient on the hero statement, and the only
+   * place on the site these colours appear.
+   *
+   * They are darker than "bright" suggests, and that is a constraint rather
+   * than a preference: the statement starts at 21px regular, which is below
+   * WCAG's large-text threshold, so every stop has to clear 4.5:1 on paper
+   * (#f2f7f6). The genuinely light candidates do not — bright teal #12a08c is
+   * 3.02:1 and the logo's orange #f5a623 is 1.87:1. Saturation and hue range
+   * carry the energy instead of lightness.
+   *
+   * Measured on paper: teal 5.41:1, cyan 4.95:1, indigo 7.30:1, magenta
+   * 5.84:1. Re-measure before substituting anything here.
+   */
+  --color-al-spark-1: #2e6f68;
+  --color-al-spark-2: #0e7490;
+  --color-al-spark-3: #4338ca;
+  --color-al-spark-4: #a21caf;
+
+  /*
+   * Highlighter washes behind the two noun phrases in the H1, plus the swash
+   * under "Awesome Labs".
+   *
+   * The warm one is not invented: it descends from #f8b048, the orange
+   * sampled from the star in the logo mark, lightened toward white. That is
+   * the only warm colour the brand already owns.
+   *
+   * Both are deliberately quiet — 1.35:1 and 1.28:1 against the paper. They
+   * read as a wash rather than a block, which is the point: at 76px a marker
+   * stripe at full strength competes with the headline it is meant to serve.
+   * The pair is also matched to each other; an earlier version had the cool at
+   * 1.52:1 and it visibly outweighed the warm.
+   *
+   * Ink on these: 11.3:1 (cool) and 12.0:1 (warm), so legibility of the text
+   * on top is never in question.
+   *
+   * WARNING: these hexes are ALSO hardcoded inside the SVG data URIs in
+   * Hero.astro — a data URI cannot read a custom property. Change one and you
+   * must change the other, or the highlight silently keeps the old colour.
+   */
+  --color-al-hl-cool: #bcdcd4;
+  --color-al-hl-warm: #f7d7a4;
+
+  /* "Work with us" band */
+  --color-al-deep: #1e3f3b;
+  --color-al-deep-ink: #e8f4f1;
+  --color-al-deep-accent: #a6d3cb;
+
+  /* Mailing-list band */
+  --color-al-band: #7fbdb4;
+  --color-al-band-ink: #0f2320;
+  --color-al-band-field: #f2fbf9;
+
+  /* ------------------------------------------------------ space + shape */
+
+  /*
+   * The one horizontal inset every band shares. Handoff: "Fluid section
+   * padding. Horizontal: clamp(20px, 5vw, 56px)."
+   */
+  --spacing-al-gutter: clamp(20px, 5vw, 56px);
+
+  /*
+   * Per-band vertical rhythm and the fluid gaps, straight from the handoff's
+   * Layout section. These are tokens rather than inline clamp() for the same
+   * reason the colours are: each name maps 1:1 to a figure in the spec, so a
+   * component reads as the design does and a drift is one grep away.
+   */
+  /*
+   * Header top inset. The handoff's ceiling is 34px; it is 24px here to make
+   * the sticky desktop header shorter.
+   *
+   * Note what this does NOT touch. At 390px wide 3.2vw is 12px, so the 20px
+   * FLOOR governs and the phone header is unchanged; the same is true at the
+   * 720px menu breakpoint, where 3.2vw is 23px. Lowering the ceiling only bites
+   * above ~750px. That is why there is no media query here — the clamp already
+   * expresses "shorter on large screens only".
+   */
+  --spacing-al-header-y: clamp(20px, 3.2vw, 24px);
+  /*
+   * Non-mobile top inset. A separate token rather than a lower ceiling on the
+   * one above, because that clamp's FLOOR is 20px (the phone value) and a
+   * clamp whose ceiling sits below its floor simply resolves to the floor —
+   * so 24px was as low as the shared token could go without also shortening
+   * the phone header. Applied only inside the >720px block in Header.astro.
+   */
+  --spacing-al-header-y-lg: clamp(14px, 1.8vw, 18px);
+  /*
+   * Bottom inset, used only by the sticky header above 720px. The handoff
+   * gives the header no bottom padding at all, on the basis that the hero owns
+   * the space below it — true while the header is in flow, but once it is
+   * sticky the box ends at the wordmark's baseline and scrolling content would
+   * touch the logo before sliding under it.
+   */
+  --spacing-al-header-pb: clamp(10px, 1.6vw, 12px);
+  /*
+   * Hero top inset. Handoff ceiling is 100px; 72px here so the hero sits
+   * closer under the shortened sticky header. Same reasoning as the header
+   * inset above — at phone widths 9vw is ~35px so the 52px floor governs, and
+   * the ceiling only takes effect above ~800px. Mobile is unchanged.
+   */
+  --spacing-al-hero-top: clamp(52px, 9vw, 72px);
+  --spacing-al-hero-bottom: clamp(56px, 7vw, 72px);
+  --spacing-al-products-bottom: clamp(48px, 7vw, 64px);
+  --spacing-al-work-y: clamp(52px, 8vw, 72px);
+  --spacing-al-signup-y: clamp(48px, 7vw, 64px);
+  --spacing-al-footer-top: clamp(20px, 3vw, 26px);
+  --spacing-al-footer-bottom: clamp(28px, 4vw, 40px);
+
+  --spacing-al-nav-gap: clamp(16px, 2.4vw, 28px);
+  --spacing-al-grid-gap: clamp(16px, 2.4vw, 24px);
+  --spacing-al-work-gap: clamp(28px, 5vw, 56px);
+  --spacing-al-signup-gap: clamp(24px, 4vw, 56px);
+  --spacing-al-heading-mb: clamp(28px, 4.5vw, 40px);
+  --spacing-al-statement-mt: clamp(20px, 3vw, 30px);
+
+  /*
+   * Logo lockup height in the header.
+   *
+   * The number is LOWER than the handoff's clamp(26px, 3.4vw, 30px) but the
+   * mark renders LARGER, which looks wrong until you know why: the handoff
+   * measured the original asset, which carried ~25px of empty padding inside
+   * the PNG (287x79 with the wordmark occupying only 264x54, on a near-
+   * transparent plate that also showed as a faint box). That plate is gone and
+   * the asset is trimmed to its content, so this height is now the glyph
+   * height itself rather than the glyph plus padding.
+   *
+   * Effective wordmark height: was ~18-21px, now 22-26px.
+   */
+  --spacing-al-logo: clamp(22px, 2.8vw, 26px);
+
+  --radius-al-card: 22px;
+  --radius-al-icon: 18px;
+
+  /* The page's only shadow, on the product cards' app icons. */
+  --shadow-al-icon: 0 6px 20px rgba(0, 0, 0, 0.18);
+}
+
+/*
+ * The prototype is full-bleed with no container cap. The handoff allows a cap:
+ * "If the codebase standard is a capped container, cap content at 1440px and
+ * keep the colored bands full-bleed." We take that option — past ~1600px the
+ * uncapped hero measure drifts wider than the design was ever drawn at.
+ * Bands stay full-bleed; only their inner content is capped.
+ */
+@utility al-shell {
+  margin-inline: auto;
+  max-width: 1440px;
+  width: 100%;
+}
+
+@layer base {
+  html {
+    /* Nav links are in-page anchors (#products, #work, #contact). */
+    scroll-behavior: smooth;
+  }
+
+  /*
+   * Anchor targets stop clear of the sticky header instead of underneath it.
+   * Without this, "Our Apps" scrolls #products to y=0, where the header is now
+   * sitting, and the section heading lands behind it.
+   *
+   * Only above 720px, since the header is only sticky there. The value is the
+   * header's height (~78px at desktop) plus breathing room.
+   */
+  @media (min-width: 721px) {
+    :target {
+      scroll-margin-top: 6rem;
+    }
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /*
+   * Handoff: "Respect prefers-reduced-motion by dropping the transform."
+   * That covers the card hover lift; smooth scroll goes with it, since a
+   * scroll jump is the same class of vestibular trigger.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /*
+   * The prototype omits focus styling entirely. Restoring a visible ring is
+   * required, not optional — the handoff calls it out for the email input and
+   * it applies to every interactive element on the page.
+   */
+  :focus-visible {
+    outline: 2px solid var(--color-al-ink);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* On the dark bands the ink ring would disappear into the background. */
+  .al-on-deep :focus-visible {
+    outline-color: var(--color-al-deep-ink);
+  }
+
+  .al-on-band :focus-visible {
+    outline-color: var(--color-al-band-ink);
+  }
+}
+
+/*
+ * Keyboard-only escape hatch past the header. Visually hidden until focused.
+ */
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 50;
+  background: var(--color-al-ink);
+  color: var(--color-al-paper);
+  padding: 12px 20px;
+  border-radius: 0 0 8px 0;
+  font-size: 15px;
+}
+
+.skip-to-content:focus {
+  left: 0;
+}
