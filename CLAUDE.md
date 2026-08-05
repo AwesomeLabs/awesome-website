@@ -88,8 +88,8 @@ Two things about it that are easy to forget:
 
 - **The logo is a raster stopgap.** `src/assets/logo-ink.png` came from the old site. It has been cleaned (the original carried a near-transparent dark plate at alpha 5 that rendered as a faint box, and ~25px of dead padding) and trimmed to 264×54, which is why `--spacing-al-logo` is numerically *lower* than the handoff's figure while rendering *larger*. The handoff still asks for the vector original before shipping.
 - **Favicons are the legacy set** carried over from the old site. Only 16/32/180 are referenced and there is no maskable Android icon; worth regenerating.
-- **Mailchimp env vars are unset.** `/api/subscribe` returns 500 until `MAILCHIMP_API_KEY` and `MAILCHIMP_AUDIENCE_ID` exist in Netlify.
-- **No responsive verification has been run** against a real browser at 390 / 834 / 1440. Headless Chrome renders correctly here but does not exit, so it cannot be scripted end to end in this environment.
+
+Note on tooling, since it will come up again: headless Chrome renders correctly in this environment but does not exit, so anything needing a browser (screenshots, responsive checks, regenerating the OG card) has to be run in the background and waited on by watching for its output file, not by waiting on the process.
 
 ## Social cards
 
